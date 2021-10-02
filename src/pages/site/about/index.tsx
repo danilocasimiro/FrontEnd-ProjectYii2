@@ -1,15 +1,8 @@
 import Head from 'next/head';
-import { Header } from '../components/Header';
-import styles from './home.module.scss';
+import { Header } from '../../../components/Header';
+import styles from './about.module.scss';
 
-interface HomeProps {
-  product: {
-    priceId: string;
-    amount: number;
-  }
-}
-
-export default function Home({product}: HomeProps) {
+export default function About() {
   return (
     <>
       <Header />

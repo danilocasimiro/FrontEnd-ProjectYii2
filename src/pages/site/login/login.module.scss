@@ -1,0 +1,16 @@
+.contentContainer {
+  max-width: 1120px;
+  position:relative;
+  font-size: 0;
+  width: 60%;
+  padding: 0 0;
+  height: calc(100vh);
+  background-color: black;
+  display: flex;
+  float: left;
+  justify-content: space-between;
+
+  background: linear-gradient(rgb(35, 35, 248), transparent);
+  -webkit-text-fill-color: transparent;
+
+}

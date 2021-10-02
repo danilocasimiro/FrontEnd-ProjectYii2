@@ -1,18 +1,11 @@
 import Head from 'next/head';
-import { Header } from '../components/Header';
-import styles from './home.module.scss';
+import { Header } from '../../../components/Header';
+import styles from './contact_us.module.scss';
 
-interface HomeProps {
-  product: {
-    priceId: string;
-    amount: number;
-  }
-}
-
-export default function Home({product}: HomeProps) {
+export default function ContactUs() {
   return (
     <>
-      <Header />
+     <Header />
       <Head>
         <title>Home | Your research</title>
       </Head>

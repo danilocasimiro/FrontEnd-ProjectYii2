@@ -1,15 +1,16 @@
 .signInbutton {
   height: 3rem;
   border-radius: 3rem;
-  background: var(--gray-850);
-  border: 0;
+  background: var(--white);
+  border: 1;
+  border-color: var(--gray-500);
   padding: 0 1.5rem;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  color: var(--white);
+  color: var(--gray-500);
   font-weight: bold;
 
   svg {

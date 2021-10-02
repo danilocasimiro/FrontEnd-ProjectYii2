@@ -1,12 +1,14 @@
-import { FaGithub } from 'react-icons/fa'
+import { FaKey } from 'react-icons/fa'
 import { FiX } from 'react-icons/fi';
 import { signIn, signOut, useSession } from 'next-auth/client'
 
 import styles from './styles.module.scss';
+import { useRouter } from 'next/router';
 
 export function SignInButton() {
 
   const [session] = useSession()
+  const router = useRouter();
 
   return session ? (
     <button
@@ -14,7 +16,7 @@ export function SignInButton() {
     className={styles.signInbutton}
     onClick={() => signOut()}
   >
-    <FaGithub color="04d361"/>
+    <FaKey color="0999ff"/>
     {session.user.name}
     <FiX color="737380" className={styles.closeIcon} />
   </button>
@@ -22,10 +24,10 @@ export function SignInButton() {
     <button
     type="button"
     className={styles.signInbutton}
-    onClick={() => signIn('github')}
+    onClick={() =>  router.push('/login')}
   >
-    <FaGithub color="eba417"/>
-    Sign in with Github
+    <FaKey color="0999ff"/>
+    Login
   </button>
   )
     

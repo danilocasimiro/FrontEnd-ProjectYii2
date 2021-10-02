@@ -54,9 +54,6 @@ async function Webhooks (req: NextApiRequest, res: NextApiResponse) {
               subscription.customer.toString(),
               false
             );
-
-          
-          
             break;
           case "invoice.paid":
             const checkoutSession = event.data.object as Stripe.Checkout.Session
