@@ -2,7 +2,26 @@ import styles from './styles.module.scss';
 import { Avatar, Divider,Center,  Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider, Image, Box, Input, InputGroup, InputLeftElement } from "@chakra-ui/react"
 import { SearchIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router';
+import jwtDecode  from "jwt-decode";
+import Cookies from 'js-cookie';
+import { api } from '../../services';
+import { useState } from 'react';
+
 export function HeaderSystem() {
+  const [ search, setSearch] = useState('')
+  
+  try {
+    const cookies = Cookies.get('nextauth.token')
+    const { user } = jwtDecode(cookies)
+    api.get(`auth-users/${user.id}`).then(currentUser => {  setSearch(currentUser.data)})
+    console.log(search)
+  } catch(error) {
+    
+    console.log(error)
+  }
+  
+  
+
   const router = useRouter();
   return (
     <header className={styles.headerContainer}>
@@ -23,6 +42,7 @@ export function HeaderSystem() {
         <Center height="50px" margin="auto" marginRight="10">
           <Divider orientation="vertical" />
         </Center>
+        <Box marginRight='14px'>{search.name}</Box>
         <Menu>
           <MenuButton margin="auto" marginRight="10" marginLeft="0">
             <Avatar name="My avatar" src="../images/transferir.png"/>

@@ -31,7 +31,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signIn({ email, password }: SignInCredentials) {
     try {
     
-      const response = await api.post('authenticate/login', {
+      const response = await api.post('auth-users/login', {
         email,
         password
       })
