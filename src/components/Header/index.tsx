@@ -12,13 +12,13 @@ export function Header() {
           <ActiveLink activeClassName={styles.active} href='/'>
             <a>Página inicial</a>
           </ActiveLink>
-          <ActiveLink activeClassName={styles.active}  href='/plans' prefetch>
+          <ActiveLink activeClassName={styles.active}  href='/site/plans' prefetch>
             <a>Planos</a>
           </ActiveLink>
-          <ActiveLink activeClassName={styles.active}  href='/about' prefetch>
+          <ActiveLink activeClassName={styles.active}  href='/site/about' prefetch>
             <a>Sobre</a>
           </ActiveLink>
-          <ActiveLink activeClassName={styles.active}  href='/contact-us' prefetch>
+          <ActiveLink activeClassName={styles.active}  href='/site/contact-us' prefetch>
             <a>Contato</a>
           </ActiveLink>
         </nav>

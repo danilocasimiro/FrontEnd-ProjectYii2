@@ -1,8 +1,31 @@
-import { Flex, Stack, Input, Button, Box, FormLabel, FormControl } from '@chakra-ui/react';
+import { Flex, Stack, Button, Box } from '@chakra-ui/react';
 import Head from 'next/head';
 import { Header } from '../../../components/Header';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup'; 
+import * as yup from 'yup';
+import { Input } from '../../../components/Form/Input'
+import { AuthContext } from '../../../contexts/AuthContext';
+import { useContext } from 'react';
+import { parseCookies } from 'nookies';
 
-export default function Login() {
+const LoginUserFormSchema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha obrigatória').min(6, 'A senha precisa ser do mínimo 6 caracteres'),
+})
+
+export default function UserLogin() {
+
+  const { signIn } = useContext(AuthContext)
+
+  async function onSubmit(data) {
+    await signIn(data)
+  }
+
+  const { register, handleSubmit, formState} = useForm({
+    resolver: yupResolver(LoginUserFormSchema)
+  });
+
   return (
     <>
       <Header />
@@ -21,43 +44,36 @@ export default function Login() {
           </Box>
         </Stack>
         <Flex
-          as="form"
-          w="100%"
-          maxW={360}
-          bg="gray.800"
-          p="8"
-          borderRadius={8}
-          flexDir="column"
-        
+        as="form"
+        w="100%"
+        maxW={360}
+        bg="gray.800"
+        p="8"
+        borderRadius={8}
+        flexDir="column"
+        onSubmit={handleSubmit(onSubmit)}
         >
-          <Stack spacing="4">
-            <FormControl>
-              <FormLabel htmlFor="email">E-mail</FormLabel>
-            
-              <Input
-                name="email"
-                type="email"
-                variant="filled"
-                _hover={{
-                  bgColor: 'gray.900'
-                }}
-                size="lg"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="email">Password</FormLabel>
-              <Input
-                name="password"
-                label="Senha"
-                type="password"
-                variant="filled"
-                _hover={{
-                  bgColor: 'gray.900'
-                }}
-                size="lg"
-              />
-            </FormControl>
-          </Stack>
+        <Stack spacing="4">
+          <Input 
+            type="email"
+            label="E-mail"
+            _hover={{
+              bgColor: 'gray.900'
+            }}
+            size="lg"
+            error={formState.errors.email}
+            {...register("email")}
+            />
+          <Input 
+            type="password"
+            label="Password"
+            _hover={{
+              bgColor: 'gray.900'
+            }} 
+            size="lg" 
+            error={formState.errors.password}
+            {...register("password")}
+            />
           <Button
             type="submit"
             mt="6"
@@ -66,8 +82,27 @@ export default function Login() {
           >
             Entrar
           </Button>
+        </Stack>
         </Flex>
       </Flex>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { ['nextauth.token']: token } = parseCookies(context)
+  
+  if (token) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false,
+      }
+    }
+  }
+
+
+  return {
+    props: {}, // Will be passed to the page component as props
+  }
 }

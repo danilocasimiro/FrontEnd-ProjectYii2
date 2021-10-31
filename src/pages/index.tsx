@@ -2,14 +2,7 @@ import Head from 'next/head';
 import { Header } from '../components/Header';
 import styles from './home.module.scss';
 
-interface HomeProps {
-  product: {
-    priceId: string;
-    amount: number;
-  }
-}
-
-export default function Home({product}: HomeProps) {
+export default function Home() {
   return (
     <>
       <Header />
