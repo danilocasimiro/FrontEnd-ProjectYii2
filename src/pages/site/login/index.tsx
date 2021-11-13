@@ -5,21 +5,49 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup'; 
 import * as yup from 'yup';
 import { Input } from '../../../components/Form/Input'
-import { AuthContext } from '../../../contexts/AuthContext';
-import { useContext } from 'react';
-import { parseCookies } from 'nookies';
+import { signIn, useSession } from 'next-auth/client'
+import { api } from '../../../services';
+import { useRouter } from 'next/router';
 
 const LoginUserFormSchema = yup.object().shape({
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
   password: yup.string().required('Senha obrigatória').min(6, 'A senha precisa ser do mínimo 6 caracteres'),
 })
 
+type Login = {
+  data: {
+    user: {
+      email: string,
+      id: string
+    },
+    token: string,
+    message: string,
+    code: string
+  }
+}
+
 export default function UserLogin() {
+  const [session] = useSession()
+  const router = useRouter();
 
-  const { signIn } = useContext(AuthContext)
-
+  console.log(session)
+  if(session) {
+    router.push('/dashboard')
+  }
   async function onSubmit(data) {
-    await signIn(data)
+   
+    const { email, password} = data;
+    const response: Login = await api.post('/auth-users/login',
+      {
+          password,
+          email
+      },
+    )
+  
+    if(response.data.code === '200') {
+
+      signIn("credentials", response.data.user )
+    }
   }
 
   const { register, handleSubmit, formState} = useForm({
@@ -87,22 +115,4 @@ export default function UserLogin() {
       </Flex>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const { ['nextauth.token']: token } = parseCookies(context)
-  
-  if (token) {
-    return {
-      redirect: {
-        destination: '/dashboard',
-        permanent: false,
-      }
-    }
-  }
-
-
-  return {
-    props: {}, // Will be passed to the page component as props
-  }
 }

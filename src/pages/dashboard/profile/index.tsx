@@ -3,8 +3,45 @@ import { HeaderSystem } from "../../../components/HeaderSystem";
 import { SideBar } from "../../../components/SideBar";
 import { SearchIcon, Icon  } from '@chakra-ui/icons'
 import { SiFacebook, SiInstagram, SiTwitter, SiGithub, SiWebmoney } from "react-icons/si";
+import { useState } from "react";
+import jwtDecode from "jwt-decode";
+import Cookies from "js-cookie";
+import { api } from "../../../services";
+
+type User = {
+  userEmail: string,
+  phone: {
+    ddd: string,
+    number: string
+  },
+  person: {
+    name: string
+  },
+  address: {
+    street: string,
+    number: string,
+    district: string,
+    city: string,
+    state: string
+  },
+  userType: {
+    type: string
+  }
+  
+}
 
 export default function Dashboard() {
+  const [ currentUser, setCurrentUser] = useState<User>()
+  
+  try {
+    const cookies = Cookies.get('nextauth.token')
+    const { user } = jwtDecode(cookies)
+    api.get(`auth-users/${user.id}`).then(currentUser => {  setCurrentUser(currentUser.data)})
+console.log(currentUser)
+  } catch(error) {
+    
+    console.log(error)
+  }  
   return (
     <>
       <HeaderSystem />
@@ -22,9 +59,9 @@ export default function Dashboard() {
           
           <Stack >
             <Button bg="#61dafb" margin="auto" marginTop="2" color="#373d4b" marginLeft="40%">Alterar imagem</Button>
-            <Text as="em" align="center" fontSize="xl">José maria</Text>
-            <Text as="em" align="center" fontSize="md">Tipo de conta: Administrador</Text>
-            <Text as="em" align="center" fontSize="md">Travessa Miranda e Castro, 487 Santana Porto Alegre/RS</Text>
+            <Text as="em" align="center" fontSize="xl">{currentUser?.person.name}</Text>
+            <Text as="em" align="center" fontSize="md">{currentUser?.userType.type}</Text>
+            <Text as="em" align="center" fontSize="md">{currentUser?.address.street}, {currentUser?.address.number} {currentUser?.address.district} {currentUser?.address.city}/{currentUser?.address.state}</Text>
             </Stack>
           <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="40%">Deletar conta</Button>
         </Box>
@@ -36,16 +73,16 @@ export default function Dashboard() {
             <Text as="em" align="center" fontSize="lg"></Text>
             <Flex>
               <Text as="u" align="center" fontSize="lg">Nome completo: </Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2"> Danilo gonçalves casimiro</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2"> {currentUser?.person.name}</Text>
             </Flex>
             <Flex>
               <Text as="u" align="center" fontSize="lg">E-mail:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">dan_casimiro@hotmail.com</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.userEmail}</Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">Telefone:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">(43)3348-8756</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">({currentUser?.phone.ddd}){currentUser?.phone.number}</Text>
             </Flex>
             
             <Flex>

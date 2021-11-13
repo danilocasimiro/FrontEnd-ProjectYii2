@@ -8,18 +8,7 @@ import { api } from '../../services';
 import { useState } from 'react';
 
 export function HeaderSystem() {
-  const [ search, setSearch] = useState('')
-  
-  try {
-    const cookies = Cookies.get('nextauth.token')
-    const { user } = jwtDecode(cookies)
-    api.get(`auth-users/${user.id}`).then(currentUser => {  setSearch(currentUser.data)})
-    console.log(search)
-  } catch(error) {
-    
-    console.log(error)
-  }
-  
+  const [ name, setName] = useState('')
   
 
   const router = useRouter();
@@ -42,7 +31,7 @@ export function HeaderSystem() {
         <Center height="50px" margin="auto" marginRight="10">
           <Divider orientation="vertical" />
         </Center>
-        <Box marginRight='14px'>{search.name}</Box>
+        <Box marginRight='14px'>{name}</Box>
         <Menu>
           <MenuButton margin="auto" marginRight="10" marginLeft="0">
             <Avatar name="My avatar" src="../images/transferir.png"/>
