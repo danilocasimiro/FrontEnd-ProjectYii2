@@ -2,15 +2,12 @@ import styles from './styles.module.scss';
 import { Avatar, Divider,Center,  Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider, Image, Box, Input, InputGroup, InputLeftElement } from "@chakra-ui/react"
 import { SearchIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router';
-import jwtDecode  from "jwt-decode";
-import Cookies from 'js-cookie';
-import { api } from '../../services';
 import { useState } from 'react';
+import { signout, signOut, useSession } from 'next-auth/client';
 
 export function HeaderSystem() {
   const [ name, setName] = useState('')
-  
-
+  const [session] = useSession()
   const router = useRouter();
   return (
     <header className={styles.headerContainer}>
@@ -31,7 +28,7 @@ export function HeaderSystem() {
         <Center height="50px" margin="auto" marginRight="10">
           <Divider orientation="vertical" />
         </Center>
-        <Box marginRight='14px'>{name}</Box>
+        <Box marginRight='14px'>{session.sessionData.user.name}</Box>
         <Menu>
           <MenuButton margin="auto" marginRight="10" marginLeft="0">
             <Avatar name="My avatar" src="../images/transferir.png"/>
@@ -47,7 +44,7 @@ export function HeaderSystem() {
               <MenuItem _hover={{bgColor: '#09647e'}} borderRadius={10}>FAQ</MenuItem>
             </MenuGroup>
             <MenuDivider />
-              <MenuItem _hover={{bgColor: '#09647e'}} borderRadius={10}>Sair</MenuItem>
+              <MenuItem _hover={{bgColor: '#09647e'}} borderRadius={10} onClick={() => signOut({ callbackUrl: `${window.location.origin}`})}>Sair</MenuItem>
           </MenuList>
         </Menu>
       </Box>

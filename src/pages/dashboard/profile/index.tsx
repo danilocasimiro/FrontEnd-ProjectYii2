@@ -1,47 +1,35 @@
 import { Flex, Box, Stack, SimpleGrid, Text, Input, FormLabel, Button, Image, Center } from "@chakra-ui/react";
 import { HeaderSystem } from "../../../components/HeaderSystem";
 import { SideBar } from "../../../components/SideBar";
-import { SearchIcon, Icon  } from '@chakra-ui/icons'
+import { Icon  } from '@chakra-ui/icons'
 import { SiFacebook, SiInstagram, SiTwitter, SiGithub, SiWebmoney } from "react-icons/si";
-import { useState } from "react";
-import jwtDecode from "jwt-decode";
-import Cookies from "js-cookie";
 import { api } from "../../../services";
+import { getSession, useSession } from "next-auth/client";
+import { useState, useEffect } from "react";
 
-type User = {
-  userEmail: string,
-  phone: {
-    ddd: string,
-    number: string
-  },
-  person: {
-    name: string
-  },
-  address: {
-    street: string,
-    number: string,
-    district: string,
-    city: string,
-    state: string
-  },
-  userType: {
-    type: string
-  }
-  
+type Object = {
+  name: string,
+  id: string
 }
 
 export default function Dashboard() {
-  const [ currentUser, setCurrentUser] = useState<User>()
+  const [ session, loading ] = useSession()
+  const [currentUser, setCurrentUser] = useState()
+  //api.get(`/auth-users/profile/${session.token.sub}`).then(result => console.log(result)).catch(e => (e))
   
-  try {
-    const cookies = Cookies.get('nextauth.token')
-    const { user } = jwtDecode(cookies)
-    api.get(`auth-users/${user.id}`).then(currentUser => {  setCurrentUser(currentUser.data)})
-console.log(currentUser)
-  } catch(error) {
-    
-    console.log(error)
-  }  
+  useEffect(async () => {
+    const result = await api.get(`/auth-users/profile/${session.token.sub}`);
+ 
+    setCurrentUser(result.data);
+  }, [session]);
+  console.log(currentUser)
+
+  if (loading) {
+    return <p>Loading…</p>
+  }
+  if (!loading && !session) {
+    return <p>You must be signed in to view this page</p>
+  }
   return (
     <>
       <HeaderSystem />
@@ -58,12 +46,12 @@ console.log(currentUser)
           </Stack>
           
           <Stack >
-            <Button bg="#61dafb" margin="auto" marginTop="2" color="#373d4b" marginLeft="40%">Alterar imagem</Button>
+            <Button bg="#61dafb" margin="auto" marginTop="2" color="#373d4b" marginLeft="42%">Alterar imagem</Button>
             <Text as="em" align="center" fontSize="xl">{currentUser?.person.name}</Text>
             <Text as="em" align="center" fontSize="md">{currentUser?.userType.type}</Text>
             <Text as="em" align="center" fontSize="md">{currentUser?.address.street}, {currentUser?.address.number} {currentUser?.address.district} {currentUser?.address.city}/{currentUser?.address.state}</Text>
             </Stack>
-          <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="40%">Deletar conta</Button>
+          <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="43%">Deletar conta</Button>
         </Box>
         <Box bg="#373d4b" borderRadius="lg">
           <SimpleGrid columns={1} spacing={4} marginTop="3" marginLeft="15%" >
@@ -72,27 +60,27 @@ console.log(currentUser)
             </Flex>
             <Text as="em" align="center" fontSize="lg"></Text>
             <Flex>
-              <Text as="u" align="center" fontSize="lg">Nome completo: </Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2"> {currentUser?.person.name}</Text>
+              <Text as="u" align="center" fontSize="lg">Nome completo: {currentUser?.person.name}</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2"> </Text>
             </Flex>
             <Flex>
-              <Text as="u" align="center" fontSize="lg">E-mail:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.userEmail}</Text>
+              <Text as="u" align="center" fontSize="lg">E-mail: {currentUser?.user.email}</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2"></Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">Telefone:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">({currentUser?.phone.ddd}){currentUser?.phone.number}</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">({currentUser?.phone.ddd}) {currentUser?.phone.number}</Text>
             </Flex>
             
             <Flex>
               <Text as="u" align="center" fontSize="lg">Gênero:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">Masculino</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.person.sex === 'M' ? 'Masculino' : 'Feminino'}</Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">Data de nascimento:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">15/08/1992</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.person.birthday}</Text>
             </Flex>
           </SimpleGrid>
         </Box>
@@ -133,36 +121,36 @@ console.log(currentUser)
             <Text as="em" align="center" fontSize="lg"></Text>
             <Flex>
               <Text as="u" align="center" fontSize="lg">Rua: </Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2"> Travessa Miranda e Castro</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2"> {currentUser?.address.street}</Text>
             </Flex>
             <Flex>
               <Text as="u" align="center" fontSize="lg">Número:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">487</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.number}</Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">Bairro:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">Santana</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.district}</Text>
             </Flex>
             
             <Flex>
               <Text as="u" align="center" fontSize="lg">Cidade:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">Porto Alegre</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.city}</Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">Estado:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">RS</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.state}</Text>
             </Flex>
             
             <Flex>
               <Text as="u" align="center" fontSize="lg">País:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">BR</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.country}</Text>
             </Flex>
            
             <Flex>
               <Text as="u" align="center" fontSize="lg">CEP:</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2">90040-280</Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.address.zipcode}</Text>
             </Flex>
            
 
@@ -171,4 +159,12 @@ console.log(currentUser)
       </SimpleGrid>
     </>
   )
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      session: await getSession(ctx)
+    }
+  }
 }

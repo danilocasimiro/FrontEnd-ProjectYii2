@@ -38,7 +38,6 @@ export default function CreateUsers() {
   });
 
   const handleCreateUser: SubmitHandler<CreateUserFormData> = (values) => {
-    console.log(values)
   }
 
   return (

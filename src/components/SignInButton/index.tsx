@@ -2,7 +2,7 @@ import { FaKey } from 'react-icons/fa'
 
 import styles from './styles.module.scss';
 import { useRouter } from 'next/router';
-import { signin, signIn, signOut, useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/client'
 
 export function SignInButton() {
   const router = useRouter();

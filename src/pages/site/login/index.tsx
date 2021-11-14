@@ -1,4 +1,4 @@
-import { Flex, Stack, Button, Box } from '@chakra-ui/react';
+import { Flex, Stack, Button, Box, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import { Header } from '../../../components/Header';
 import { useForm } from "react-hook-form";
@@ -8,6 +8,7 @@ import { Input } from '../../../components/Form/Input'
 import { signIn, useSession } from 'next-auth/client'
 import { api } from '../../../services';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
 const LoginUserFormSchema = yup.object().shape({
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
@@ -18,19 +19,34 @@ type Login = {
   data: {
     user: {
       email: string,
-      id: string
+      photo: string,
+      acessToken: string,
+      id: string,
+      AuthKey: string,
+      company_id: string,
+      user_type_id: string
     },
+    person: {
+      id: string,
+      name: string
+    },
+    phone: {
+      ddd: string,
+      number: string
+    }
     token: string,
     message: string,
     code: string
   }
 }
-
+function timeout(delay: number) {
+  return new Promise( res => setTimeout(res, delay) );
+}
 export default function UserLogin() {
   const [session] = useSession()
   const router = useRouter();
+  const [messageError, setMessageError] = useState('');
 
-  console.log(session)
   if(session) {
     router.push('/dashboard')
   }
@@ -43,10 +59,24 @@ export default function UserLogin() {
           email
       },
     )
-  
     if(response.data.code === '200') {
-
-      signIn("credentials", response.data.user )
+      const user = response.data.user
+      const person = response.data.person
+    
+      const usrData = {
+        id: user.id,
+        acessToken: user.acessToken,
+        authKey: user.AuthKey,
+        companyId: user.company_id,
+        email: user.email,
+        photo: user.photo,
+        user_type_id: user.user_type_id,
+        personId: person.id,
+        name: person.name
+      }
+      signIn("credentials", usrData )
+    } else {
+      setMessageError(response.data.message)
     }
   }
 
@@ -110,6 +140,7 @@ export default function UserLogin() {
           >
             Entrar
           </Button>
+          <Text color="red">{messageError}</Text>
         </Stack>
         </Flex>
       </Flex>

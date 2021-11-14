@@ -58,23 +58,17 @@ export default function CreateUser() {
       }
     })
 
-console.log('aaaaaaa');
-console.log(response);
-console.log('bbbbbbbbb');
-
     return response.data.user;
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries('users')
     }
   });
-console.log(createUser)
   const { register, handleSubmit, formState} = useForm({
     resolver: yupResolver(createUserFormSchema)
   });
 
   const handleCreateUser: SubmitHandler<CreateUserFormData> = async (values) => {
-    console.log('aaaaabbbbbcccc');
     await createUser.mutateAsync(values);
 
     router.push('/site/login')

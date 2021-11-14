@@ -1,7 +1,7 @@
 import { HeaderSystem } from "../../components/HeaderSystem";
 import { SideBar } from "../../components/SideBar";
 import { useSession } from 'next-auth/client';
-import { useRouter } from "next/router";
+import { getSession } from "next-auth/client"
 
 export default function Dashboard() {
   const [ session, loading ] = useSession()
@@ -19,4 +19,12 @@ export default function Dashboard() {
     <SideBar/>
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      session: await getSession(ctx)
+    }
+  }
 }
