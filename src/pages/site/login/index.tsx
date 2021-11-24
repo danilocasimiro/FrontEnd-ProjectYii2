@@ -9,6 +9,7 @@ import { signIn, useSession } from 'next-auth/client'
 import { api } from '../../../services';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 const LoginUserFormSchema = yup.object().shape({
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
@@ -39,13 +40,12 @@ type Login = {
     code: string
   }
 }
-function timeout(delay: number) {
-  return new Promise( res => setTimeout(res, delay) );
-}
+
 export default function UserLogin() {
   const [session] = useSession()
   const router = useRouter();
   const [messageError, setMessageError] = useState('');
+  const [cookies, setCookie] = useCookies();
 
   if(session) {
     router.push('/dashboard')
@@ -59,10 +59,14 @@ export default function UserLogin() {
           email
       },
     )
+
     if(response.data.code === '200') {
+      
       const user = response.data.user
       const person = response.data.person
-    
+
+      setCookie('next_auth_token', response.data.token)
+      
       const usrData = {
         id: user.id,
         acessToken: user.acessToken,

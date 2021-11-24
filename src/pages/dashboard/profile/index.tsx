@@ -6,23 +6,25 @@ import { SiFacebook, SiInstagram, SiTwitter, SiGithub, SiWebmoney } from "react-
 import { api } from "../../../services";
 import { getSession, useSession } from "next-auth/client";
 import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
-type Object = {
-  name: string,
-  id: string
-}
 
 export default function Dashboard() {
   const [ session, loading ] = useSession()
   const [currentUser, setCurrentUser] = useState()
-  //api.get(`/auth-users/profile/${session.token.sub}`).then(result => console.log(result)).catch(e => (e))
+  const [cookies, setCookie] = useCookies();
   
-  useEffect(async () => {
-    const result = await api.get(`/auth-users/profile/${session.token.sub}`);
- 
-    setCurrentUser(result.data);
-  }, [session]);
-  console.log(currentUser)
+  useEffect( () => {
+    api.get(`/profile/${session.token.sub}`, {
+      headers: {
+        Authorization: `Bearer ${cookies.next_auth_token}`
+      }
+    }).then((response) => {
+      setCurrentUser(response.data);
+
+    }).catch((e) => { console.log(e)})
+    
+  }, []);
 
   if (loading) {
     return <p>Loading…</p>
@@ -64,7 +66,7 @@ export default function Dashboard() {
               <Text as="em" align="center" fontSize="lg" marginLeft="2"> </Text>
             </Flex>
             <Flex>
-              <Text as="u" align="center" fontSize="lg">E-mail: {currentUser?.user.email}</Text>
+              <Text as="u" align="center" fontSize="lg">E-mail: {currentUser?.email}</Text>
               <Text as="em" align="center" fontSize="lg" marginLeft="2"></Text>
             </Flex>
            

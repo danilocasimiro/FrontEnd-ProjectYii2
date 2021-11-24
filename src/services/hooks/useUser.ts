@@ -10,7 +10,6 @@ type User = {
 }
 
 export async function getUser(id): Promise<User[]> {
-  console.log('dddss')
   try {
     const { data } = await api.get("/auth-users/profile").catch(e => console.log(e))
 

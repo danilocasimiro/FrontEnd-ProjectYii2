@@ -2,31 +2,12 @@ import { Flex, Stack, Button, Box, FormLabel, SimpleGrid, Text } from '@chakra-u
 import Head from 'next/head';
 import { Header } from '../../../components/Header';
 import { Input } from '../../../components/Form/Input';
-import { useMutation } from 'react-query'
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'; 
 import { useRouter } from 'next/router';
 import { api } from '../../../services';
-import { queryClient } from '../../../services/queryClient'
-
-type CreateUserFormData = {
-  name: string,
-  email: string,
-  genre: string,
-  birthdate: string,
-  ddd: string,
-  phone_number: string,
-  address: string,
-  number: string,
-  district: string,
-  city: string,
-  state: string,
-  country: string,
-  zip_code: string,
-  password: string,
-  password_confirmation: string,
-}
+import toast, { Toaster } from 'react-hot-toast';
 
 const createUserFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -49,29 +30,25 @@ const createUserFormSchema = yup.object().shape({
 export default function CreateUser() {
   const router = useRouter()
 
-  const createUser = useMutation(async (user : CreateUserFormData) => {
-    
-    const response = await api.post('/users', {
-      user: {
-        ...user,
-        created_at: new Date(),
-      }
-    })
-
-    return response.data.user;
-  }, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('users')
-    }
-  });
   const { register, handleSubmit, formState} = useForm({
     resolver: yupResolver(createUserFormSchema)
   });
 
-  const handleCreateUser: SubmitHandler<CreateUserFormData> = async (values) => {
-    await createUser.mutateAsync(values);
+  async function onSubmit(data) {
+    const loading = toast.loading('Aguarde....')
+    
+    await api.post('/auth-users',{ data }).catch( e => {
+      toast.remove(loading)
+      toast.error('Erro ao criar o usuário!!!')
+      }
+    ).then(response => {
 
-    router.push('/site/login')
+      toast.remove(loading)
+      if(!!response) {
+        toast.success('Usuário criado com sucesso!!!')  
+        router.push('/site/login')
+      }
+    })
   }
   return (
     <>
@@ -90,8 +67,7 @@ export default function CreateUser() {
             </Box>
           </Box>
         </Stack>
-
-        <Box
+        <Flex
           as="form"
           w="100%"
           h="100%"
@@ -101,8 +77,10 @@ export default function CreateUser() {
           borderRadius={10}
           flexDir="column"
           marginLeft="37"
-          onSubmit={handleSubmit(handleCreateUser)}
+          onSubmit={handleSubmit(onSubmit)}
         >
+        {toast}
+        <Toaster />
           <Stack spacing="4">
             <SimpleGrid columns={[2, null, 3]} spacingX="50px" spacingY="10px">
               <Box>
@@ -116,7 +94,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.email}
                   {...register("email")}>
                 </Input>
@@ -131,7 +109,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.password}
                   {...register("password")}>
                 </Input>
@@ -145,12 +123,14 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"  
+                  size="md"  
                   error={formState.errors.password_confirmation}
                   {...register("password_confirmation")}>
                 </Input>
               </Box>
-              <Box marginTop="3">
+            </SimpleGrid>
+            <SimpleGrid columns={[2, null, 2]} spacingX="50px" spacingY="10px">
+              <Box marginTop="1">
                 <Text as="i" fontSize="xl" height="10" color="#61dafb">Dados pessoais</Text>
                 <FormLabel htmlFor="name">Nome</FormLabel>
               
@@ -161,7 +141,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"   
+                  size="md"   
                   error={formState.errors.name}
                   {...register("name")}>
                 </Input>
@@ -176,12 +156,14 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.genre}
                   {...register("genre")}>
                 </Input>
               </Box>
-              <Box marginTop="10">
+            </SimpleGrid>
+            <SimpleGrid columns={[2, null, 3]} spacingX="50px" spacingY="10px">
+              <Box>
                 <FormLabel htmlFor="birthdate">Data de nascimento</FormLabel>
               
                 <Input
@@ -191,11 +173,43 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.birthdate}
                   {...register("birthdate")}>
                 </Input>
               </Box>
+              <Box>
+                <FormLabel htmlFor="ddd">DDD</FormLabel>
+              
+                <Input
+                  name="ddd"
+                  type="text"
+                  variant="filled"
+                  _hover={{
+                    bgColor: 'gray.900'
+                  }}
+                  size="md"
+                  error={formState.errors.ddd}
+                  {...register("ddd")}>
+                </Input>
+              </Box>
+              <Box>
+                <FormLabel htmlFor="phone_number">Telefone</FormLabel>
+              
+                <Input
+                  name="phone_number"
+                  type="text"
+                  variant="filled"
+                  _hover={{
+                    bgColor: 'gray.900'
+                  }}
+                  size="md"
+                  error={formState.errors.phone_number}
+                  {...register("phone_number")}>
+                </Input>
+              </Box>
+            </SimpleGrid>
+            <SimpleGrid columns={[2, null, 3]} spacingX="50px" spacingY="10px">
               <Box marginTop="5">
                 <Text as="i" fontSize="xl" height="10" color="#61dafb">Dados de endereço</Text>
                 <FormLabel htmlFor="address">Endereço</FormLabel>
@@ -207,7 +221,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.address}
                   {...register("address")}>
                 </Input>
@@ -222,7 +236,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.number}
                   {...register("number")}>
                 </Input>
@@ -237,7 +251,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.district}
                   {...register("district")}>
                 </Input>
@@ -254,7 +268,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.city}
                   {...register("city")}>
                 </Input>
@@ -269,7 +283,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.state}
                   {...register("state")}>
                 </Input>
@@ -284,7 +298,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="md"
                   error={formState.errors.country}
                   {...register("country")}>
                 </Input>
@@ -299,7 +313,7 @@ export default function CreateUser() {
                   _hover={{
                     bgColor: 'gray.900'
                   }}
-                  size="lg"
+                  size="sm"
                   error={formState.errors.zip_code}
                   {...register("zip_code")}>
                 </Input>
@@ -315,7 +329,7 @@ export default function CreateUser() {
           >
             Criar conta
           </Button>
-        </Box>
+        </Flex>
       </Flex>
     </>
   );
