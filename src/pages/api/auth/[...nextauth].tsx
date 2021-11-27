@@ -1,31 +1,50 @@
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 
+type User = {
+  id: string,
+  name: string,
+  email: string,
+  photo: string,
+  user_type: string
+}
+
 export default NextAuth({
   providers: [
     Providers.Credentials({
       name: 'Credentials',
-      authorize: async (credentials) => {
-        return credentials
+      authorize: async (credentials: User) => {
+        const user: User = {
+          id: credentials.id,
+          name: credentials.name,
+          email: credentials.email,
+          photo: credentials.photo,
+          user_type: credentials.user_type
+        }
+        
+        if (user) {
+          return user
+        } else {
+          return null
+        }
+      
       }
     })
   ],
   callbacks: {
-    jwt: async (token, data ) => {
-      secret: process.env.JWT_TOKEN,
-      //  "data" parameter is the object received from "authorize"
+    jwt: async (token, user, account, profile, isNewUser) => {
+      //  "user" parameter is the object received from "authorize"
       //  "token" is being send below to "session" callback...
       //  ...so we set "user" param of "token" to object from "authorize"...
       //  ...and return it...
-      data && (token.user = data.user) && (token.person = data.person);
+      user && (token.user = user);
       return Promise.resolve(token)   // ...here
     },
-  
-    async session(session, token) {      
-      return { 
-        sessionData: session,
-        token: token
-      }
+    session: async (session, user, sessionToken) => {
+        //  "session" is current session object
+        //  below we set "user" param of "session" to value received from "jwt" callback
+        session.user = user.user;
+        return Promise.resolve(session)
     }
   },
 })

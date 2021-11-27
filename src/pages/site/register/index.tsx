@@ -1,4 +1,4 @@
-import { Flex, Stack, Button, Box, FormLabel, SimpleGrid, Text } from '@chakra-ui/react';
+import { Flex, Stack, Button, Box, FormLabel, SimpleGrid, Text, Select } from '@chakra-ui/react';
 import Head from 'next/head';
 import { Header } from '../../../components/Header';
 import { Input } from '../../../components/Form/Input';
@@ -146,20 +146,19 @@ export default function CreateUser() {
                   {...register("name")}>
                 </Input>
               </Box>
-              <Box marginTop="10">
+              <Box marginTop="8">
                 <FormLabel htmlFor="sex">Gênero</FormLabel>
               
-                <Input
-                  name="genre"
-                  type="text"
-                  variant="filled"
-                  _hover={{
-                    bgColor: 'gray.900'
-                  }}
-                  size="md"
-                  error={formState.errors.genre}
-                  {...register("genre")}>
-                </Input>
+                <Select placeholder="Selecione"  
+                        _hover={{
+                        bgColor: 'gray.900'
+                        }}
+                        error={formState.errors.genre}
+                        {...register("genre")}>
+                
+                  <option value="m">Masculino</option>
+                  <option value="f">Feminino</option>
+                </Select>
               </Box>
             </SimpleGrid>
             <SimpleGrid columns={[2, null, 3]} spacingX="50px" spacingY="10px">

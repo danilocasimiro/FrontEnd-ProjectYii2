@@ -5,7 +5,7 @@ import { getSession } from "next-auth/client"
 
 export default function Dashboard() {
   const [ session, loading ] = useSession()
-
+  
   if (loading) {
     return <p>Loading…</p>
   }

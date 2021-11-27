@@ -25,7 +25,9 @@ type Login = {
       id: string,
       AuthKey: string,
       company_id: string,
-      user_type_id: string
+      userType: {
+        type: string
+      },
     },
     person: {
       id: string,
@@ -40,6 +42,9 @@ type Login = {
     code: string
   }
 }
+function timeout(delay: number) {
+  return new Promise( res => setTimeout(res, delay) );
+}
 
 export default function UserLogin() {
   const [session] = useSession()
@@ -53,7 +58,7 @@ export default function UserLogin() {
   async function onSubmit(data) {
    
     const { email, password} = data;
-    const response: Login = await api.post('/auth-users/login',
+    const response: Login = await api.post('/authenticate/login',
       {
           password,
           email
@@ -74,7 +79,7 @@ export default function UserLogin() {
         companyId: user.company_id,
         email: user.email,
         photo: user.photo,
-        user_type_id: user.user_type_id,
+        user_type: user.userType.type,
         personId: person.id,
         name: person.name
       }

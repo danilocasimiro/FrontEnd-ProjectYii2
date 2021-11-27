@@ -4,7 +4,7 @@ import { SideBar } from "../../../components/SideBar";
 import { Icon  } from '@chakra-ui/icons'
 import { SiFacebook, SiInstagram, SiTwitter, SiGithub, SiWebmoney } from "react-icons/si";
 import { api } from "../../../services";
-import { getSession, useSession } from "next-auth/client";
+import { getSession, signOut, useSession } from "next-auth/client";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
@@ -13,9 +13,9 @@ export default function Dashboard() {
   const [ session, loading ] = useSession()
   const [currentUser, setCurrentUser] = useState()
   const [cookies, setCookie] = useCookies();
-  
+    
   useEffect( () => {
-    api.get(`/profile/${session.token.sub}`, {
+    api.get(`/profile/${session.user.id}`, {
       headers: {
         Authorization: `Bearer ${cookies.next_auth_token}`
       }
@@ -32,6 +32,21 @@ export default function Dashboard() {
   if (!loading && !session) {
     return <p>You must be signed in to view this page</p>
   }
+
+  function deleteUser() {
+
+    api.delete(`/auth-users/${currentUser?.id}`, {
+      headers: {
+        Authorization: `Bearer ${cookies.next_auth_token}`
+      }
+    }).then((response) => {
+      setCurrentUser(response.data);
+      signOut({ callbackUrl: `${window.location.origin}`})
+
+
+    }).catch((e) => { console.log(e)})
+  }
+  
   return (
     <>
       <HeaderSystem />
@@ -53,7 +68,7 @@ export default function Dashboard() {
             <Text as="em" align="center" fontSize="md">{currentUser?.userType.type}</Text>
             <Text as="em" align="center" fontSize="md">{currentUser?.address.street}, {currentUser?.address.number} {currentUser?.address.district} {currentUser?.address.city}/{currentUser?.address.state}</Text>
             </Stack>
-          <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="43%">Deletar conta</Button>
+          <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="43%" onClick={deleteUser}>Deletar conta</Button>
         </Box>
         <Box bg="#373d4b" borderRadius="lg">
           <SimpleGrid columns={1} spacing={4} marginTop="3" marginLeft="15%" >
@@ -62,12 +77,12 @@ export default function Dashboard() {
             </Flex>
             <Text as="em" align="center" fontSize="lg"></Text>
             <Flex>
-              <Text as="u" align="center" fontSize="lg">Nome completo: {currentUser?.person.name}</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2"> </Text>
+              <Text as="u" align="center" fontSize="lg">Nome completo: </Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2"> {currentUser?.person.name}</Text>
             </Flex>
             <Flex>
-              <Text as="u" align="center" fontSize="lg">E-mail: {currentUser?.email}</Text>
-              <Text as="em" align="center" fontSize="lg" marginLeft="2"></Text>
+              <Text as="u" align="center" fontSize="lg">E-mail: </Text>
+              <Text as="em" align="center" fontSize="lg" marginLeft="2">{currentUser?.email}</Text>
             </Flex>
            
             <Flex>
