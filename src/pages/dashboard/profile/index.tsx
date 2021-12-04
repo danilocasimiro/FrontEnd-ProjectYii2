@@ -8,18 +8,24 @@ import { getSession, signOut, useSession } from "next-auth/client";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
+interface ServerProps {
+  id: string
+}
 
-export default function Dashboard() {
+export default function Dashboard({ id }: ServerProps) {
   const [ session, loading ] = useSession()
   const [currentUser, setCurrentUser] = useState()
   const [cookies, setCookie] = useCookies();
-    
+
+  const profileId = id ? id : session.user.id
+
   useEffect( () => {
-    api.get(`/profile/${session.user.id}`, {
+    api.get(`/profile/${profileId}`, {
       headers: {
         Authorization: `Bearer ${cookies.next_auth_token}`
       }
     }).then((response) => {
+      console.log(response)
       setCurrentUser(response.data);
 
     }).catch((e) => { console.log(e)})
@@ -46,7 +52,7 @@ export default function Dashboard() {
 
     }).catch((e) => { console.log(e)})
   }
-  
+console.log(currentUser)  
   return (
     <>
       <HeaderSystem />
@@ -179,9 +185,12 @@ export default function Dashboard() {
 }
 
 export async function getServerSideProps(ctx) {
+  const id = ctx.query.id ? ctx.query.id : null
   return {
     props: {
-      session: await getSession(ctx)
+      session: await getSession(ctx),
+      id
     }
   }
 }
+

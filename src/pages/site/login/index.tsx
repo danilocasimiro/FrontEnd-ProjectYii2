@@ -42,9 +42,6 @@ type Login = {
     code: string
   }
 }
-function timeout(delay: number) {
-  return new Promise( res => setTimeout(res, delay) );
-}
 
 export default function UserLogin() {
   const [session] = useSession()
