@@ -91,8 +91,9 @@ export default function CreateUser() {
                   name="email"
                   type="email"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.email}
@@ -105,9 +106,10 @@ export default function CreateUser() {
                   name="password"
                   label="Senha"
                   type="password"
+                  bg="gray.900"
                   variant="filled"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.password}
@@ -120,8 +122,9 @@ export default function CreateUser() {
                   name="password_confirmation"
                   type="password"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"  
                   error={formState.errors.password_confirmation}
@@ -138,8 +141,9 @@ export default function CreateUser() {
                   name="name"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"   
                   error={formState.errors.name}
@@ -150,8 +154,9 @@ export default function CreateUser() {
                 <FormLabel htmlFor="sex">Gênero</FormLabel>
               
                 <Select placeholder="Selecione"  
+                        bg="gray.900"
                         _hover={{
-                        bgColor: 'gray.900'
+                        bgColor: 'gray.600'
                         }}
                         error={formState.errors.genre}
                         {...register("genre")}>
@@ -169,8 +174,9 @@ export default function CreateUser() {
                   name="birthdate"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.birthdate}
@@ -184,8 +190,9 @@ export default function CreateUser() {
                   name="ddd"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.ddd}
@@ -199,8 +206,9 @@ export default function CreateUser() {
                   name="phone_number"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.phone_number}
@@ -217,8 +225,9 @@ export default function CreateUser() {
                   name="address"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.address}
@@ -232,8 +241,9 @@ export default function CreateUser() {
                   name="number"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.number}
@@ -247,8 +257,9 @@ export default function CreateUser() {
                   name="district"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.district}
@@ -263,9 +274,10 @@ export default function CreateUser() {
                 <Input
                   name="city"
                   type="text"
+                  bg="gray.900"
                   variant="filled"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.city}
@@ -279,8 +291,9 @@ export default function CreateUser() {
                   name="state"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.state}
@@ -294,8 +307,9 @@ export default function CreateUser() {
                   name="country"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="md"
                   error={formState.errors.country}
@@ -309,8 +323,9 @@ export default function CreateUser() {
                   name="zip_code"
                   type="text"
                   variant="filled"
+                  bg="gray.900"
                   _hover={{
-                    bgColor: 'gray.900'
+                    bgColor: 'gray.600'
                   }}
                   size="sm"
                   error={formState.errors.zip_code}

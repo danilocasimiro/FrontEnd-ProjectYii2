@@ -20,12 +20,12 @@ export default function Dashboard({ id }: ServerProps) {
   const profileId = id ? id : session.user.id
 
   useEffect( () => {
-    api.get(`/profile/${profileId}`, {
+    api.get(`/auth-users/${profileId}?expand=person,company,address,phone`, {
       headers: {
         Authorization: `Bearer ${cookies.next_auth_token}`
       }
     }).then((response) => {
-      console.log(response)
+
       setCurrentUser(response.data);
 
     }).catch((e) => { console.log(e)})
@@ -52,7 +52,7 @@ export default function Dashboard({ id }: ServerProps) {
 
     }).catch((e) => { console.log(e)})
   }
-console.log(currentUser)  
+
   return (
     <>
       <HeaderSystem />
@@ -71,7 +71,7 @@ console.log(currentUser)
           <Stack >
             <Button bg="#61dafb" margin="auto" marginTop="2" color="#373d4b" marginLeft="42%">Alterar imagem</Button>
             <Text as="em" align="center" fontSize="xl">{currentUser?.person.name}</Text>
-            <Text as="em" align="center" fontSize="md">{currentUser?.userType.type}</Text>
+            <Text as="em" align="center" fontSize="md">{currentUser?.type}</Text>
             <Text as="em" align="center" fontSize="md">{currentUser?.address.street}, {currentUser?.address.number} {currentUser?.address.district} {currentUser?.address.city}/{currentUser?.address.state}</Text>
             </Stack>
           <Button bg="#dd211a" margin="auto" marginTop="2" marginBottom="4" marginLeft="43%" onClick={deleteUser}>Deletar conta</Button>

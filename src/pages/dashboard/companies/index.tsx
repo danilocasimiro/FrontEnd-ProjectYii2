@@ -18,7 +18,8 @@ type Company = {
   name: string,
   foundation: string,
   cnpj: string,
-  id: string
+  id: string,
+  data: [string]
 }
 
 export default function View() {
@@ -88,8 +89,9 @@ export default function View() {
             name="search"
             type="text"
             variant="filled"
+            bg='gray.600'
             _hover={{
-              bgColor: 'gray.900'
+              bgColor: 'gray.200'
             }}
             size="md"
             width="30%"
@@ -126,7 +128,7 @@ export default function View() {
             <Td>{company.foundation}</Td>
             <Td>{company.cnpj}</Td>
             <Td><IconButton colorScheme='blue' aria-label='Search database' onClick={() => router.push(`/dashboard/profile?id=${company.auth_user_id}`)} icon={<ViewIcon />} /></Td>
-            <Td><IconButton colorScheme='blue' aria-label='Search database' onClick={() => router.push(`/dashboard/profile?id=${company.auth_user_id}`)} icon={<EditIcon />} /></Td>
+            <Td><IconButton colorScheme='blue' aria-label='Search database' onClick={() => router.push(`/dashboard/companies/edit?id=${company.auth_user_id}`)} icon={<EditIcon />} /></Td>
           </Tr>)
           })}
         </Tbody>

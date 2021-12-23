@@ -20,7 +20,7 @@ export function HeaderSystem() {
             pointerEvents="none"
             children={<SearchIcon color="gray.300" />}
           />
-          <Input type="text" placeholder="Search for..." />
+          <Input type="text" placeholder="Busque por..." />
         </InputGroup>
          
         </nav>
@@ -33,12 +33,12 @@ export function HeaderSystem() {
             <Avatar name="My avatar" src="../images/transferir.png"/>
           </MenuButton>
           <MenuList bg="#2a9ab9">
-            <MenuGroup title="Profile" fontSize="20">
-              <MenuItem as="button" _hover={{bgColor: '#09647e'}} borderRadius={10} onClick={() => router.push('/dashboard/profile')}>My Account</MenuItem>
-              <MenuItem  _hover={{bgColor: '#09647e'}} borderRadius={10}>Payments </MenuItem>
+            <MenuGroup title="Menu" fontSize="20">
+              <MenuItem as="button" _hover={{bgColor: '#09647e'}} borderRadius={10} onClick={() => router.push('/dashboard/profile')}>Meus dados</MenuItem>
+              <MenuItem  _hover={{bgColor: '#09647e'}} borderRadius={10}>Pagamentos </MenuItem>
             </MenuGroup>
             <MenuDivider />
-            <MenuGroup title="Help" fontSize="20">
+            <MenuGroup title="Ajuda" fontSize="20">
               <MenuItem _hover={{bgColor: '#09647e'}} borderRadius={10}>Docs</MenuItem>
               <MenuItem _hover={{bgColor: '#09647e'}} borderRadius={10}>FAQ</MenuItem>
             </MenuGroup>

@@ -8,8 +8,9 @@ import { Input } from '../../../components/Form/Input'
 import { signIn, useSession } from 'next-auth/client'
 import { api } from '../../../services';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useCookies } from 'react-cookie';
+import toast, { Toaster } from 'react-hot-toast';
 
 const LoginUserFormSchema = yup.object().shape({
   email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
@@ -25,9 +26,7 @@ type Login = {
       id: string,
       AuthKey: string,
       company_id: string,
-      userType: {
-        type: string
-      },
+      type: string
     },
     person: {
       id: string,
@@ -48,12 +47,13 @@ export default function UserLogin() {
   const router = useRouter();
   const [messageError, setMessageError] = useState('');
   const [cookies, setCookie] = useCookies();
+  
 
   if(session) {
     router.push('/dashboard')
   }
   async function onSubmit(data) {
-   
+    const loading = toast.loading('Aguarde....')
     const { email, password} = data;
     const response: Login = await api.post('/authenticate/login',
       {
@@ -61,28 +61,40 @@ export default function UserLogin() {
           email
       },
     )
+    if(response) {
+      toast.remove(loading)
 
-    if(response.data.code === '200') {
-      
-      const user = response.data.user
-      const person = response.data.person
-
-      setCookie('next_auth_token', response.data.token)
-      
-      const usrData = {
-        id: user.id,
-        acessToken: user.acessToken,
-        authKey: user.AuthKey,
-        companyId: user.company_id,
-        email: user.email,
-        photo: user.photo,
-        user_type: user.userType.type,
-        personId: person.id,
-        name: person.name
+      if(!response || response.data.code !== '200') {
+        setMessageError(response?.data.message)
+        console.log(response?.data.message)
+        toast.error(response?.data.message)
+        
+      } else {
+        
+        toast.success('Login realizado com sucesso!!!')
+        const user = response.data.user
+        const person = response.data.person
+  
+        setCookie('next_auth_token', response.data.token)
+        
+        const usrData = {
+          id: user.id,
+          acessToken: user.acessToken,
+          authKey: user.AuthKey,
+          companyId: user.company_id,
+          email: user.email,
+          photo: user.photo,
+          user_type: user.type,
+          personId: person.id,
+          name: person.name
+        }
+        signIn("credentials", usrData )
       }
-      signIn("credentials", usrData )
-    } else {
-      setMessageError(response.data.message)
+    }else { 
+
+      setMessageError(response?.data.message)
+      toast.remove(loading)
+      toast.error(response?.data.message)
     }
   }
 
@@ -117,12 +129,15 @@ export default function UserLogin() {
         flexDir="column"
         onSubmit={handleSubmit(onSubmit)}
         >
+        {toast}
+        <Toaster />
         <Stack spacing="4">
           <Input 
             type="email"
             label="E-mail"
+            bg="gray.900"
             _hover={{
-              bgColor: 'gray.900'
+              bgColor: 'gray.600'
             }}
             size="lg"
             error={formState.errors.email}
@@ -131,8 +146,9 @@ export default function UserLogin() {
           <Input 
             type="password"
             label="Password"
+            bg="gray.900"
             _hover={{
-              bgColor: 'gray.900'
+              bgColor: 'gray.600'
             }} 
             size="lg" 
             error={formState.errors.password}
