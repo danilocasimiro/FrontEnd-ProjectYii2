@@ -1,50 +1,71 @@
-import NextAuth from 'next-auth'
-import Providers from 'next-auth/providers'
+import NextAuth from "next-auth";
+import CredentialProvider from "next-auth/providers/credentials";
 
-type User = {
-  id: string,
-  name: string,
+interface User {
+  id: string
   email: string,
-  photo: string,
-  user_type: string
+  name: string,
+  type: string,
+  token: string,
+  friendly_id: string
 }
 
 export default NextAuth({
   providers: [
-    Providers.Credentials({
-      name: 'Credentials',
-      authorize: async (credentials: User) => {
-        const user: User = {
+    CredentialProvider({
+      name: "credentials",
+      credentials: {
+        username: {
+          label: "Email",
+          type: "text",
+          placeholder: "johndoe@test.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: (credentials: User) => {
+        const user = { 
+          email: credentials.email, 
+          name: credentials.name, 
+          type: credentials.type, 
+          token: credentials.token, 
           id: credentials.id,
-          name: credentials.name,
-          email: credentials.email,
-          photo: credentials.photo,
-          user_type: credentials.user_type
+          friendly_id: credentials.friendly_id
         }
-        
-        if (user) {
+
+        if(user) {
           return user
-        } else {
-          return null
-        }
-      
-      }
-    })
+        } 
+    
+
+        // login failed
+        return null;
+      },
+    }),
   ],
   callbacks: {
-    jwt: async (token, user, account, profile, isNewUser) => {
-      //  "user" parameter is the object received from "authorize"
-      //  "token" is being send below to "session" callback...
-      //  ...so we set "user" param of "token" to object from "authorize"...
-      //  ...and return it...
-      user && (token.user = user);
-      return Promise.resolve(token)   // ...here
+    async jwt({ token, user, account, profile }) {
+      // Persist the OAuth access_token to the token right after signin
+      if (account) {
+        token.accessToken = user.token
+        token.type = user.type
+        token.id = user.id
+        token.friendly_id = user.friendly_id
+      }
+   
+      return token
     },
-    session: async (session, user, sessionToken) => {
-        //  "session" is current session object
-        //  below we set "user" param of "session" to value received from "jwt" callback
-        session.user = user.user;
-        return Promise.resolve(session)
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      session.token = token.accessToken
+      session.user.type = token.type
+      session.user.id = token.id
+      session.user.friendly_id = token.friendly_id
+      return session
     }
   },
-})
+  secret: "test",
+ 
+  pages: {
+    signIn: "auth/sigin",
+  },
+});

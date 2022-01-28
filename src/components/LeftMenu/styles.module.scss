@@ -1,0 +1,111 @@
+@import '~react-pro-sidebar/dist/scss/styles.scss';
+
+.signOutbutton {
+  height: 3rem;
+  width: 7rem;
+  margin-left: 4rem;
+  border-radius: 3rem;
+  background: var(--gray-500);
+  border: 0;
+  padding-left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--gray-500);
+  font-weight: bold;
+
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.8);
+  }
+}
+
+.sidebarWrapper .sidebarBrand {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+}
+
+.sidebarWrapper .sidebarBrand > a {
+  text-transform: uppercase;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+/*--------------------sidebarHeader----------------------*/
+
+.sidebarWrapper .sidebarHeader {
+  padding: 20px;
+  overflow: hidden;
+}
+
+.sidebarWrapper .sidebarHeader .userPic {
+  float: left;
+  width: 60px;
+  padding: 2px;
+  border-radius: 12px;
+  margin-right: 15px;
+  overflow: hidden;
+}
+
+.sidebarWrapper .sidebarHeader .userPic img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.sidebarWrapper .sidebarHeader .userInfo {
+  float: left;
+}
+
+.sidebarWrapper .sidebarHeader .userInfo > span {
+  display: block;
+}
+
+.sidebarWrapper .sidebarHeader .userInfo .userRole {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.sidebarWrapper .sidebarHeader .userInfo .userStatus {
+  font-size: 11px;
+  margin-top: 9px;
+}
+
+.sidebarWrapper .sidebarHeader .userInfo .userStatus i {
+  font-size: 10px;
+  margin-right: 4px;
+  color: #5cb85c;
+}
+
+/*-----------------------sidebar-search------------------------*/
+
+.sidebarContent {
+  max-height: calc(100% - 30px);
+  height: calc(100% - 30px);
+  overflow-y: auto;
+  position: relative;
+}
+
+.sidebarContent.desktop {
+  overflow-y: hidden;
+}
+
+#closeSidebar {
+  cursor: pointer;
+  font-size: 20px;
+  color: #bdbdbd;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #ffffff
+  }
+}

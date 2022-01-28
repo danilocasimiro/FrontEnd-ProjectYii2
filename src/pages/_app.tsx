@@ -1,26 +1,15 @@
-import { AppProps } from 'next/app'
-import { ChakraProvider } from '@chakra-ui/react';
-import { theme } from '../styles/theme'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { Provider as NextAuthProvider } from 'next-auth/client'
-import { CookiesProvider } from "react-cookie";
+import {  AppProps } from 'next/app'
+import { SessionProvider } from "next-auth/react"
 
-const queryClient = new QueryClient()
+import '../styles/global.scss'
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps){
   return (
-      <NextAuthProvider session={pageProps.session}>
-        <CookiesProvider>
-          <QueryClientProvider client={queryClient}>
-            <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-            </ChakraProvider>
-            <ReactQueryDevtools/>
-          </QueryClientProvider>
-        </CookiesProvider>
-      </NextAuthProvider>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
   )
 }
-
-export default MyApp

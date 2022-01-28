@@ -1,30 +1,23 @@
-import { HeaderSystem } from "../../components/HeaderSystem";
-import { SideBar } from "../../components/SideBar";
-import { useSession } from 'next-auth/client';
-import { getSession } from "next-auth/client"
+import { useSession } from 'next-auth/react'
+import Head from 'next/head'
+import { HeaderSystem } from '../../components/HeaderSystem'
+import LeftMenu from '../../components/LeftMenu'
+import { useRouter } from "next/router";
 
 export default function Dashboard() {
-  const [ session, loading ] = useSession()
-  
-  if (loading) {
-    return <p>Loading…</p>
-  }
-  if (!loading && !session) {
-    return <p>You must be signed in to view this page</p>
-  }
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
+  if (!session && status == "unauthenticated") {
+    router.push('/');
+  }
   return (
     <>
-    <HeaderSystem />
-    <SideBar/>
+      <HeaderSystem />
+      <Head>
+        <title>Página inicial - Your Search </title>
+      </Head>
+      <LeftMenu name={session?.user.name} email={session?.user.email} type={session?.user.type} />
     </>
-  );
-}
-
-export async function getServerSideProps(ctx) {
-  return {
-    props: {
-      session: await getSession(ctx)
-    }
-  }
+  )
 }
