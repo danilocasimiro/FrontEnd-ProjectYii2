@@ -7,8 +7,16 @@ import dateFormat from "dateformat";
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import styles from './styles.module.scss'
+import { useState } from 'react'
 
-export default function UserFormRegister() {
+export function UserFormRegister() {
+  const [name, setName] = useState()
+  const [level, setLevel] = useState('')
+  const [email, setEmail] = useState('')
+  const [genre, setGenre] = useState('')
+  const [birthdate, setBirthdate] = useState('')
+  const [ddd, setDdd] = useState('')
+  const [phone, setPhone] = useState('')
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -40,7 +48,7 @@ export default function UserFormRegister() {
               <InputLabel htmlFor="input-with-icon-adornment" className={styles.label}>
                 Nome
               </InputLabel>
-              <Input id="margin-none" className={styles.input} />
+              <Input id="margin-none" className={styles.input} type="text" name="name" onChange={event => setEmail(event.currentTarget.value)} />
             </Item>
           </Grid>
           <Grid item xs={4}>
